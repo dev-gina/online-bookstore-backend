@@ -1,29 +1,33 @@
-import { Book } from "../model/Book";
+import { ResultSetHeader } from "mysql2";
+import db from "../config/database";
 
-const books: Book[] = [
-  { id: 1, title: "이진아 타입스크립트", author: "이진아", quantity: 10 },
-  { id: 2, title: "RGT 실전 가이드", author: "RGT", quantity: 5 },
-  { id: 3, title: "면접 마스터하기", author: "이지나", quantity: 8 }
-];
-
-export default {
-  getAll: () => books,
-  getById: (id: number) => books.find((b) => b.id === id),
-  add: (book: Book) => {
-    book.id = books.length + 1;
-    books.push(book);
-    return book;
-  },
-  update: (id: number, updatedBook: Partial<Book>) => {
-    const book = books.find((b) => b.id === id);
-    if (!book) return null;
-    Object.assign(book, updatedBook);
-    return book;
-  },
-  delete: (id: number) => {
-    const index = books.findIndex((b) => b.id === id);
-    if (index === -1) return null;
-    books.splice(index, 1);
-    return true;
+export class BookRepository {
+  static async getAllBooks() {
+    const [rows] = await db.query("SELECT * FROM books");
+    return rows;
   }
-};
+
+  static async getBookById(id: number) {
+    const [rows] = await db.query("SELECT * FROM books WHERE id = ?", [id]);
+    return (rows as any[])[0] || null;
+  }
+
+  static async addBook(title: string, author: string, quantity: number) {
+    const [result] = await db.query(
+      "INSERT INTO books (title, author, quantity) VALUES (?, ?, ?)",
+      [title, author, quantity]
+    );
+    return { id: (result as ResultSetHeader).insertId, title, author, quantity };
+  }
+
+  static async updateBook(id: number, title: string, author: string, quantity: number) {
+    await db.query(
+      "UPDATE books SET title = ?, author = ?, quantity = ? WHERE id = ?",
+      [title, author, quantity, id]
+    );
+  }
+
+  static async deleteBook(id: number) {
+    await db.query("DELETE FROM books WHERE id = ?", [id]);
+  }
+}

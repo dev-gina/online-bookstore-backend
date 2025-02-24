@@ -9,9 +9,8 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "baseUrl": "./src",
-    "paths": {
-      "*": ["./*"]
-    },
+    "paths": {}
+    ,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },

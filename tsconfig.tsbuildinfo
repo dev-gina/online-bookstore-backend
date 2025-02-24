@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/database.ts","./src/config/server.ts","./src/controller/bookcontroller.ts","./src/model/book.ts","./src/repository/bookrepository.ts","./src/routes/bookroutes.ts","./src/service/bookservice.ts"],"version":"5.7.3"}

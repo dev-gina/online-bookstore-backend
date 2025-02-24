@@ -1,38 +1,63 @@
 import { Request, Response } from "express";
-import BookService from "../service/BookService";
+import { BookService } from "../service/BookService";
 
-interface IBookController {
-  getAllBooks: (req: Request, res: Response) => void;
-  getBookById: (req: Request, res: Response) => void;
-  addBook: (req: Request, res: Response) => void;
-  updateBook: (req: Request, res: Response) => void;
-  deleteBook: (req: Request, res: Response) => void;
-}
-
-const BookController: IBookController = {
-  getAllBooks: (req, res) => {
-    const books = BookService.getAllBooks();
-    res.json({ books, totalPages: 1 });
-  },
-  getBookById: (req, res) => {
-    const book = BookService.getBookById(Number(req.params.id));
-    if (!book) return res.status(404).json({ message: "책을 찾을 수 없습니다." });
-    res.json(book);
-  },
-  addBook: (req, res) => {
-    const book = BookService.addBook(req.body);
-    res.status(201).json(book);
-  },
-  updateBook: (req, res) => {
-    const book = BookService.updateBook(Number(req.params.id), req.body);
-    if (!book) return res.status(404).json({ message: "책을 찾을 수 없습니다." });
-    res.json(book);
-  },
-  deleteBook: (req, res) => {
-    const success = BookService.deleteBook(Number(req.params.id));
-    if (!success) return res.status(404).json({ message: "책을 찾을 수 없습니다." });
-    res.status(204).send();
+export class BookController {
+  static async getAllBooks(req: Request, res: Response): Promise<void> {
+    try {
+      const books = await BookService.getAllBooks();
+      res.status(200).json(books);
+    } catch (error) {
+      console.error("책 목록 불러오기 실패:", error);
+      res.status(500).json({ message: "책 목록을 불러올 수 없습니다." });
+    }
   }
-};
 
-export default BookController;
+  static async getBookById(req: Request, res: Response): Promise<void> {
+    try {
+      const bookId = Number(req.params.id);
+      const book = await BookService.getBookById(bookId);
+      if (!book) {
+        res.status(404).json({ message: "책을 찾을 수 없습니다." });
+        return;
+      }
+      res.status(200).json(book);
+    } catch (error) {
+      console.error("책 상세 정보 불러오기 실패:", error);
+      res.status(500).json({ message: "책 상세 정보를 불러올 수 없습니다." });
+    }
+  }
+
+  static async addBook(req: Request, res: Response): Promise<void> {
+    try {
+      const { title, author, quantity } = req.body;
+      const newBook = await BookService.addBook(title, author, quantity);
+      res.status(201).json(newBook);
+    } catch (error) {
+      console.error("책 추가 실패:", error);
+      res.status(500).json({ message: "책을 추가할 수 없습니다." });
+    }
+  }
+
+  static async updateBook(req: Request, res: Response): Promise<void> {
+    try {
+      const bookId = Number(req.params.id);
+      const { title, author, quantity } = req.body;
+      await BookService.updateBook(bookId, title, author, quantity);
+      res.json({ message: "책 정보가 업데이트되었습니다." });
+    } catch (error) {
+      console.error("책 정보 업데이트 실패:", error);
+      res.status(500).json({ message: "책 정보를 업데이트할 수 없습니다." });
+    }
+  }
+
+  static async deleteBook(req: Request, res: Response): Promise<void> {
+    try {
+      const bookId = Number(req.params.id);
+      await BookService.deleteBook(bookId);
+      res.json({ message: "책이 삭제되었습니다." });
+    } catch (error) {
+      console.error("책 삭제 실패:", error);
+      res.status(500).json({ message: "책을 삭제할 수 없습니다." });
+    }
+  }
+}

@@ -1,12 +1,28 @@
-import app from "./config/server";
+import express from "express";
+import cors from "cors";
+import bookRoutes from "./routes/bookRoutes";
 
-const PORT = process.env.PORT || 5000;
+const app = express();
+const PORT = 5001;
 
-// 기본 경로 추가
-app.get("/", (req, res) => {
-  res.send("📚 온라인 서점 API가 실행 중입니다!");
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+
+app.use(express.json());
+
+// 테스트 엔드포인트 추가
+app.get("/api/test", (req, res) => {
+  res.send("Test endpoint works!");
 });
 
+// API 라우트 등록
+app.use("/api", bookRoutes);
+
 app.listen(PORT, () => {
-  console.log(`✅ 서버가 http://localhost:${PORT} 에서 실행 중`);
+  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
 });

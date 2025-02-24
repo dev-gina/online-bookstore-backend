@@ -1,30 +1,47 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const books = [
-    { id: 1, title: "이진아 타입스크립트", author: "이진아", quantity: 10 },
-    { id: 2, title: "RGT 실전 가이드", author: "RGT", quantity: 5 },
-    { id: 3, title: "면접 마스터하기", author: "이지나", quantity: 8 }
-];
-exports.default = {
-    getAll: () => books,
-    getById: (id) => books.find((b) => b.id === id),
-    add: (book) => {
-        book.id = books.length + 1;
-        books.push(book);
-        return book;
-    },
-    update: (id, updatedBook) => {
-        const book = books.find((b) => b.id === id);
-        if (!book)
-            return null;
-        Object.assign(book, updatedBook);
-        return book;
-    },
-    delete: (id) => {
-        const index = books.findIndex((b) => b.id === id);
-        if (index === -1)
-            return null;
-        books.splice(index, 1);
-        return true;
-    }
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BookRepository = void 0;
+const database_1 = __importDefault(require("../config/database"));
+class BookRepository {
+    static getAllBooks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [rows] = yield database_1.default.query("SELECT * FROM books");
+            return rows;
+        });
+    }
+    static getBookById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [rows] = yield database_1.default.query("SELECT * FROM books WHERE id = ?", [id]);
+            return rows[0] || null;
+        });
+    }
+    static addBook(title, author, quantity) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [result] = yield database_1.default.query("INSERT INTO books (title, author, quantity) VALUES (?, ?, ?)", [title, author, quantity]);
+            return { id: result.insertId, title, author, quantity };
+        });
+    }
+    static updateBook(id, title, author, quantity) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query("UPDATE books SET title = ?, author = ?, quantity = ? WHERE id = ?", [title, author, quantity, id]);
+        });
+    }
+    static deleteBook(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query("DELETE FROM books WHERE id = ?", [id]);
+        });
+    }
+}
+exports.BookRepository = BookRepository;
