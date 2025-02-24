@@ -1,8 +1,8 @@
 import { BookRepository } from "../repository/BookRepository";
 
 export class BookService {
-  static async getAllBooks() {
-    return await BookRepository.getAllBooks();
+  static async getAllBooks(page: number = 1, limit: number = 10) {
+    return await BookRepository.getAllBooks(page, limit);
   }
 
   static async getBookById(id: number) {

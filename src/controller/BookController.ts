@@ -4,7 +4,9 @@ import { BookService } from "../service/BookService";
 export class BookController {
   static async getAllBooks(req: Request, res: Response): Promise<void> {
     try {
-      const books = await BookService.getAllBooks();
+      const page = req.query.page ? Number(req.query.page) : 1;
+      const limit = req.query.limit ? Number(req.query.limit) : 10;
+      const books = await BookService.getAllBooks(page, limit);
       res.status(200).json(books);
     } catch (error) {
       console.error("책 목록 불러오기 실패:", error);
@@ -41,7 +43,17 @@ export class BookController {
   static async updateBook(req: Request, res: Response): Promise<void> {
     try {
       const bookId = Number(req.params.id);
-      const { title, author, quantity } = req.body;
+      let { title, author, quantity } = req.body;
+      // title이나 author가 누락된 경우 기존 값을 보충합니다.
+      if (title === undefined || author === undefined) {
+        const existingBook = await BookService.getBookById(bookId);
+        if (!existingBook) {
+          res.status(404).json({ message: "책을 찾을 수 없습니다." });
+          return;
+        }
+        if (title === undefined) title = existingBook.title;
+        if (author === undefined) author = existingBook.author;
+      }
       await BookService.updateBook(bookId, title, author, quantity);
       res.json({ message: "책 정보가 업데이트되었습니다." });
     } catch (error) {
