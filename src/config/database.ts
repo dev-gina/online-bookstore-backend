@@ -1,17 +1,13 @@
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
 
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("환경 변수가 설정되지 않았습니다.");
-}
-
-// MySQL Connection 생성
 const db = mysql.createPool({
-  uri: databaseUrl,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  host: process.env.DB_HOST || 'localhost',  
+  user: process.env.DB_USER || 'root',    
+  password: process.env.DB_PASSWORD || '12345', 
+  database: process.env.DB_NAME || 'books',  
+  uri: process.env.DATABASE_URL,
 });
 
 export default db;

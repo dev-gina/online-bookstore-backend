@@ -1,7 +1,7 @@
 ### 백엔드 - 이진아
 
 1. 앱에 대한 설명
-- 주요 역할 : 책 데이터에 대한 CRUD 제공
+- 주요 역할 : 책 데이터에 대한 CRUD API 제공
 - 기술 스택 : Node.js, Express, TypeScript, MySQL
 - 중요 구조
   ① Controller : 라우팅 및 요청/응답처리
@@ -14,7 +14,12 @@
 2. 소스 빌드 및 실행 방법
 C:\web_gina\rgt-backend-test\online-bookstore-backend>
 npm run dev
-* db 접속 시 환경 변수(.env)설정
+
+MySQL
+① mysql -h j1r4n2ztuwm0bhh5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com -u mez0x84b65wop9cb -p
+② 비밀번호 : u3xq3ruitd1iepzl
+③ USE q1rpnfothvo3zycv;
+④ SELECT * FROM books;
 
 -----------------------------------------------------------------------
 
@@ -30,52 +35,101 @@ npm run dev
 
 
 4. DB 스키마 & 데이터
-mysql> SHOW TABLES;                                              
-+---------------------+
-| Tables_in_bookstore |
-+---------------------+
-| books               |
-+---------------------+
-1 row in set (0.01 sec)
-
+mysql> SHOW TABLES;        
++----------------------------+
+| Tables_in_q1rpnfothvo3zycv |
++----------------------------+
+| books                      |
++----------------------------+
+1 row in set (0.19 sec)
 
 mysql> SELECT * FROM books;
-+-----+----------------------------------+-------------------+----------+
-| id  | title                            | author            | quantity |
-+-----+----------------------------------+-------------------+----------+
-|  35 | 하얀고래                         | 루이스            |      150 |
-|  39 | 세이노의 가르침                  | 세이노            |      180 |
-|  99 | 모순                             | 양귀자            |      100 |
-| 100 | 초역 부처의 말                   | 코이케 류노스케   |      160 |
-| 101 | 해커스 토익 기출                 | David Cho         |      150 |
-| 102 | 환율의 대전환                    | 오건영            |       60 |
-| 103 | 소년이 온다                      | 한강              |      130 |
-| 104 | 어른의 행복은 조용하다           | 태수              |       55 |
-| 105 | 적당한 사람                      | 이창섭            |       90 |
-| 106 | 말 잘하는 사람은 말투부터 다르다 | 장신웨            |       99 |
-| 107 | 내가 원하는 것을 나도 모를때     | 전승환            |       77 |
-| 108 | 버리는 용기                      | 고바야시 히로유키 |      160 |
-| 121 | 급류                             | 정대건            |      120 |
-| 122 | 부자들의 성공심리학              | 이정규            |      162 |
-| 123 | 거래의 기술                      | 도널드 트럼프     |      198 |
-| 124 | 우리는 왜 공허한가               | 멍칭옌            |       20 |
-| 131 | 해커스 토익 700                  | 해커스            |       17 |
-| 132 | AI 시대 생존 전략                | 세가 쳉           |        5 |
-| 133 | 그릿                             | 김주환            |      188 |
-| 134 | 넥서스                           | 유발하리리        |       25 |
-| 135 | 프로방스에서는 멈춰도 괜찮아     | 김범              |      251 |
-+-----+----------------------------------+-------------------+----------+
-21 rows in set (0.00 sec)
++----+------------------------+---------------------+----------+
+| id | title                  | author              | quantity |
++----+------------------------+---------------------+----------+
+|  1 | The Great Gatsby       | F. Scott Fitzgerald |        5 |
+|  2 | To Kill a Mockingbird  | Harper Lee          |        5 |
+|  3 | 1984                   | George Orwell       |        8 |
+| 14 | 퓨처 셀프 30만         | 벤저민 하디         |       10 |
+| 15 | 모순                   | 양귀자              |      100 |
+| 16 | 초역 부처의 말         | 코이케 류노스케     |       88 |
+| 17 | 해커스 토익            | 해커스              |       70 |
+| 18 | 소년이 온다            | 한강                |       50 |
+| 19 | 어른의 행복은 조용하다 | 태수                |      160 |
+| 21 | 급류                   | 정대건              |       60 |
+| 22 | 시간 고양이            | 박미연 이지북       |      135 |
+| 23 | 미키 7                 | 에드워드 애슈턴     |      150 |
++----+------------------------+---------------------+----------+
+12 rows in set (0.19 sec)
 
 
 -----------------------------------------------------------------------
 
 
 5. API 명세 예시
-서버 실행 후 > http://localhost:5001/api/books?page=1&limit=10 > 
-[{"id":135,"title":"프로방스에서는 멈춰도 괜찮아","author":"김범","quantity":251},{"id":134,"title":"넥서스","author":"유발하리리","quantity":25},{"id":133,"title":"그릿","author":"김주환","quantity":188},{"id":132,"title":"AI 시대 생존 전략","author":"세가 쳉","quantity":5},{"id":131,"title":"해커스 토익 700","author":"해커스","quantity":17},{"id":124,"title":"우리는 왜 공허한가","author":"멍칭옌","quantity":20},{"id":123,"title":"거래의 기술","author":"도널드 트럼프","quantity":198},{"id":122,"title":"부자들의 성공심리학","author":"이정규","quantity":162},{"id":121,"title":"급류","author":"정대건","quantity":120},{"id":108,"title":"버리는 용기","author":"고바야시 히로유키","quantity":160}]
+1. 책 목록 조회 (READ)
+URL: /api/books?page=1&limit=10
+요청: GET 요청
+응답 예시:
+[
+  {
+    "id": 1,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "quantity": 5
+  },
+  ...
+]
 
+2. 책 추가 (CREATE)
+URL: /api/books
+요청: POST 요청
+요청 예시:
+{
+  "title": "The Catcher in the Rye",
+  "author": "J.D. Salinger",
+  "quantity": 3
+}
+{
+  "id": 25,
+  "title": "The Catcher in the Rye",
+  "author": "J.D. Salinger",
+  "quantity": 3
+}
 
+3. 책 수정 (UPDATE)
+URL: /api/books/:id
+요청: PUT 요청
+요청 예시:
+{
+  "title": "1984 (Updated Edition)",
+  "author": "George Orwell",
+  "quantity": 10
+}
+{
+  "id": 3,
+  "title": "1984 (Updated Edition)",
+  "author": "George Orwell",
+  "quantity": 10
+}
 
+4. 책 삭제 (DELETE)
+URL: /api/books/:id
+요청: DELETE 요청
+응답 예시:
+{
+  "message": "책이 삭제되었습니다."
+}
 
-
+5. 책 검색 (Search)
+URL: /api/books/search?query=1984
+요청: GET 요청
+응답 예시:
+[
+  {
+    "id": 3,
+    "title": "1984",
+    "author": "George Orwell",
+    "quantity": 8
+  }
+]
