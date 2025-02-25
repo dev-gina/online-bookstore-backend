@@ -27,18 +27,7 @@ app.get("/api/test", (req, res) => {
   res.send("테스트 엔드포인트 확인");
 });
 
-// 책 목록 조회 API
-app.get("/api/books", async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM books");
-    res.json(rows);
-  } catch (error) {
-    console.error("책 목록 불러오기 실패:", error);
-    res.status(500).json({ message: "책 목록을 불러올 수 없습니다." });
-  }
-});
-
 // 서버 실행
 app.listen(PORT, () => {
-  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
+  console.log(`서버 실행 중: http://localhost:${PORT}`);
 });
