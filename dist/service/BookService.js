@@ -13,8 +13,8 @@ exports.BookService = void 0;
 const BookRepository_1 = require("../repository/BookRepository");
 class BookService {
     static getAllBooks() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield BookRepository_1.BookRepository.getAllBooks();
+        return __awaiter(this, arguments, void 0, function* (page = 1, limit = 10) {
+            return yield BookRepository_1.BookRepository.getAllBooks(page, limit);
         });
     }
     static getBookById(id) {

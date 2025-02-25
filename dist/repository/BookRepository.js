@@ -16,15 +16,17 @@ exports.BookRepository = void 0;
 const database_1 = __importDefault(require("../config/database"));
 class BookRepository {
     static getAllBooks() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const [rows] = yield database_1.default.query("SELECT * FROM books");
+        return __awaiter(this, arguments, void 0, function* (page = 1, limit = 1000) {
+            const offset = (page - 1) * limit;
+            const [rows] = yield database_1.default.query("SELECT * FROM books ORDER BY id DESC LIMIT ? OFFSET ?", [limit, offset]);
             return rows;
         });
     }
     static getBookById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const [rows] = yield database_1.default.query("SELECT * FROM books WHERE id = ?", [id]);
-            return rows[0] || null;
+            const books = rows;
+            return books.length > 0 ? books[0] : null;
         });
     }
     static addBook(title, author, quantity) {

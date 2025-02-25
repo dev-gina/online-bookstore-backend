@@ -4,12 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const bookRoutes_1 = __importDefault(require("./routes/bookRoutes"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5001;
-// 기본 라우트 추가
-app.get("/", (req, res) => {
-    res.send("📚 온라인 서점 서버가 정상적으로 실행되었습니다! 🚀");
-});
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use("/api", bookRoutes_1.default);
 app.listen(PORT, () => {
     console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
 });

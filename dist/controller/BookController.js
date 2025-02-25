@@ -15,7 +15,9 @@ class BookController {
     static getAllBooks(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const books = yield BookService_1.BookService.getAllBooks();
+                const page = req.query.page ? Number(req.query.page) : 1;
+                const limit = req.query.limit ? Number(req.query.limit) : 1000;
+                const books = yield BookService_1.BookService.getAllBooks(page, limit);
                 res.status(200).json(books);
             }
             catch (error) {
@@ -58,7 +60,18 @@ class BookController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const bookId = Number(req.params.id);
-                const { title, author, quantity } = req.body;
+                let { title, author, quantity } = req.body;
+                if (title === undefined || author === undefined) {
+                    const existingBook = yield BookService_1.BookService.getBookById(bookId);
+                    if (!existingBook) {
+                        res.status(404).json({ message: "책을 찾을 수 없습니다." });
+                        return;
+                    }
+                    if (title === undefined)
+                        title = existingBook.title;
+                    if (author === undefined)
+                        author = existingBook.author;
+                }
                 yield BookService_1.BookService.updateBook(bookId, title, author, quantity);
                 res.json({ message: "책 정보가 업데이트되었습니다." });
             }

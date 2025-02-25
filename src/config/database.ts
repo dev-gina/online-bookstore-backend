@@ -1,20 +1,34 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import { parse } from "url"; 
+import { URL } from "url"; 
 
 dotenv.config();
 
-const databaseUrl = process.env.DATABASE_URL
-  ? parse(process.env.DATABASE_URL)
-  : null;
+let dbConfig;
 
-  const db = mysql.createPool({
-    host: databaseUrl?.hostname || process.env.DB_HOST || "localhost", 
-    user: databaseUrl?.auth?.split(":")[0] || process.env.DB_USER || "root",
-    password: databaseUrl?.auth?.split(":")[1] || process.env.DB_PASSWORD || "12345",
-    database: databaseUrl?.pathname?.slice(1) || process.env.DB_NAME || "books",
-    port: Number(databaseUrl?.port) || 3306, 
-  });  
+if (process.env.DATABASE_URL) {
+  const databaseUrl = new URL(process.env.DATABASE_URL);
   
+  dbConfig = {
+    host: databaseUrl.hostname,
+    user: databaseUrl.username,
+    password: databaseUrl.password,
+    database: databaseUrl.pathname.substring(1),
+    port: Number(databaseUrl.port) || 3306,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  };
+} else {
+  dbConfig = {
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "12345",
+    database: process.env.DB_NAME || "books",
+    port: 3306,
+  };
+}
+
+const db = mysql.createPool(dbConfig);
 
 export default db;
