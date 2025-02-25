@@ -1,13 +1,12 @@
-// testServer.ts
 import express from "express";
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001; 
 
 app.use(express.json());
 
 app.get("/api/test", (req, res) => {
-  res.send("Test endpoint works!");
+  res.send("테스트 엔드포인트 확인");
 });
 
 app.listen(PORT, () => {
