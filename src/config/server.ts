@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001;
 // CORS 설정
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://deluxe-pastelito-f5b62a.netlify.app"], 
+    origin: ["http://localhost:3000", "https://online-bookstore-frontend-gina.netlify.app"], 
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   })
