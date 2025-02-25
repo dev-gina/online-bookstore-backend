@@ -10,11 +10,12 @@ export interface Book {
 
 export class BookRepository {
 
-  static async getAllBooks(page: number = 1, limit: number = 10): Promise<Book[]> {
+  static async getAllBooks(page: number = 1, limit: number = 1000): Promise<Book[]> {
     const offset = (page - 1) * limit;
-    const [rows] = await db.query("SELECT * FROM books LIMIT ? OFFSET ?", [limit, offset]);
+    const [rows] = await db.query("SELECT * FROM books ORDER BY id DESC LIMIT ? OFFSET ?", [limit, offset]);
     return rows as Book[];
   }
+  
 
   static async getBookById(id: number): Promise<Book | null> {
     const [rows] = await db.query("SELECT * FROM books WHERE id = ?", [id]);

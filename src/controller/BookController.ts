@@ -5,7 +5,7 @@ export class BookController {
   static async getAllBooks(req: Request, res: Response): Promise<void> {
     try {
       const page = req.query.page ? Number(req.query.page) : 1;
-      const limit = req.query.limit ? Number(req.query.limit) : 10;
+      const limit = req.query.limit ? Number(req.query.limit) : 1000;
       const books = await BookService.getAllBooks(page, limit);
       res.status(200).json(books);
     } catch (error) {
@@ -44,7 +44,7 @@ export class BookController {
     try {
       const bookId = Number(req.params.id);
       let { title, author, quantity } = req.body;
-      // title이나 author가 누락된 경우 기존 값을 보충합니다.
+
       if (title === undefined || author === undefined) {
         const existingBook = await BookService.getBookById(bookId);
         if (!existingBook) {
