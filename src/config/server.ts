@@ -1,4 +1,4 @@
-import express from "express";
+  import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import booksRouter from "../routes/bookRoutes";
@@ -9,12 +9,17 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // CORS 설정 
-app.use(cors({
-  origin: ["http://localhost:3000", "https://online-bookstore-frontend-gina.netlify.app"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,  
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://online-bookstore-frontend-gina.netlify.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,  
+  })
+);
 
 app.use(express.json());
 
