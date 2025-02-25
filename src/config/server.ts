@@ -1,43 +1,26 @@
 import express from "express";
 import cors from "cors";
-import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import booksRouter from "../routes/bookRoutes";
 
-// 환경 변수 설정
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
 // CORS 설정
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://online-bookstore-frontend-gina.netlify.app"], 
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+app.use(cors({
+  origin: ["http://localhost:3000", "https://online-bookstore-frontend-gina.netlify.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+}));
 
-// DB 연결
-const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "12345",
-  database: process.env.DB_NAME || "bookstore",
-});
+app.use(express.json());
 
-// 책 목록 조회 API
-app.get("/api/books", async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM books");
-    res.json(rows);
-  } catch (error) {
-    console.error("책 목록 불러오기 실패:", error);
-    res.status(500).json({ message: "책 목록을 불러올 수 없습니다." });
-  }
-});
+// 📌 라우트 설정 (booksRouter 사용)
+app.use("/api/books", booksRouter);
 
 // 서버 실행
 app.listen(PORT, () => {
-  console.log(`서버 실행 중: http://localhost:${PORT}`);
+  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
 });
