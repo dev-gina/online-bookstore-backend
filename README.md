@@ -15,12 +15,6 @@
 C:\web_gina\rgt-backend-test\online-bookstore-backend>
 npm run dev
 
-MySQL
-① mysql -h j1r4n2ztuwm0bhh5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com -u mez0x84b65wop9cb -p
-② 비밀번호 : u3xq3ruitd1iepzl
-③ USE q1rpnfothvo3zycv;
-④ SELECT * FROM books;
-
 -----------------------------------------------------------------------
 
 
