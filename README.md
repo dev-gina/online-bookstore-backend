@@ -12,7 +12,7 @@
 
 
 2. 소스 빌드 및 실행 방법
-C:\web_gina\rgt-backend-test\online-bookstore-backend>
+C:\web_gina\final-back\online-bookstore-backend>
 npm run dev
 
 -----------------------------------------------------------------------
